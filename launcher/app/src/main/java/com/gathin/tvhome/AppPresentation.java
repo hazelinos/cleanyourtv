@@ -1,8 +1,5 @@
 package com.gathin.tvhome;
 
-import android.content.Context;
-import android.graphics.drawable.Drawable;
-
 import java.util.HashMap;
 import java.util.Map;
 
@@ -70,11 +67,5 @@ final class AppPresentation {
     static String displayLabel(String pkg, String ownLabel) {
         Brand brand = brand(pkg);
         return brand != null ? brand.label : ownLabel;
-    }
-
-    /** The badge for the app library's icon slot, or null to show the app's own icon. */
-    static Drawable badge(Context ctx, String pkg) {
-        Brand brand = brand(pkg);
-        return brand == null ? null : ctx.getDrawable(brand.badgeRes);
     }
 }

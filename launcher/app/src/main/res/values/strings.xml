@@ -61,7 +61,6 @@
     <string name="remap_action_clock">Show the clock</string>
     <string name="remap_action_home">Back to the top of Home</string>
     <string name="remap_action_open_app">Open an app…</string>
-    <string name="remap_none">No buttons mapped yet</string>
     <string name="remap_conflict">%1$s was already mapped; it now does the new action.</string>
     <string name="remap_delete">Delete mapping</string>
     <string name="remap_reset">Reset all mappings</string>

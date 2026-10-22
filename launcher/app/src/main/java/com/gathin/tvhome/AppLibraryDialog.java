@@ -308,9 +308,9 @@ final class AppLibraryDialog {
         String pkg = app.activityInfo.packageName;
         icon.setTag(pkg);
         // A brand-table package (AppPresentation) shows the launcher's own badge, not the app's icon.
-        Drawable badge = AppPresentation.badge(activity, pkg);
-        if (badge != null) {
-            icon.setImageDrawable(badge);
+        AppPresentation.Brand brand = AppPresentation.brand(pkg);
+        if (brand != null) {
+            icon.setImageDrawable(activity.getDrawable(brand.badgeRes));
             return;
         }
         Drawable cached = icons.get(pkg);

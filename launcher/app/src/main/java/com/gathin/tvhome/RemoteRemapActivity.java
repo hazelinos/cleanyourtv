@@ -150,13 +150,6 @@ public final class RemoteRemapActivity extends Activity {
 
     private void buildRows() {
         rows.removeAllViews();
-        if (mappings.isEmpty()) {
-            TextView none = new TextView(this);
-            none.setText(R.string.remap_none);
-            none.setTextColor(0xFFACB8C1);
-            none.setTextSize(16);
-            rows.addView(none);
-        }
         for (final RemoteMappings.Mapping m : mappings) {
             // The Launcher settings row style: glass background, focus and text colours included.
             TextView row = new TextView(this, null, 0, R.style.SettingsRow);
