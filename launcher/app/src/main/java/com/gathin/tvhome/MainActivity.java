@@ -201,6 +201,8 @@ public class MainActivity extends Activity implements AppAdapter.TileListener {
     /** config settings_key_keycodes / settings_key_panel, so the Settings button works on Home without HomeKeyService. */
     private int[] settingsKeycodes = new int[0];
     private boolean settingsKeyPanel;
+    /** The owner's remote button mappings (RemoteMappings), re-read on resume; empty until one is made. */
+    private List<RemoteMappings.Mapping> remoteMappings = java.util.Collections.emptyList();
     /** Calmer motion for weak GPUs (config.xml, reduced_motion): stiff spring, short fades, no replay. */
     private boolean reducedMotion;
     /** config.xml dock_row: the first row is a separate dock (band, parked low, top shelf) rather than plain grid. */
@@ -791,6 +793,7 @@ public class MainActivity extends Activity implements AppAdapter.TileListener {
             return;
         }
         restartIdleClock();
+        remoteMappings = RemoteMappings.load(RemoteMappings.storeFile(this));
         promptsPaused = false;
         if (grid.getAdapter() == null) grid.setAdapter(adapter);   // dropped by onTrimMemory
         switch (tileRefresh.onResume(packagesChangedSinceRebuild())) {
@@ -1073,6 +1076,49 @@ public class MainActivity extends Activity implements AppAdapter.TileListener {
         return false;
     }
 
+    /**
+     * The owner's remote button mappings (RemoteMappings), made on the Remote buttons page. While
+     * Home is in front with no menu, popup or library open, a mapped button runs its action on
+     * release and the press is swallowed whole, so the button does nothing else. In-app only by
+     * construction: another app in front means this dispatch never runs, and keys the TV keeps
+     * for itself could never be saved as mappings in the first place.
+     */
+    private boolean handleRemoteMapping(KeyEvent event) {
+        if (remoteMappings.isEmpty() || reordering || appLibrary != null || openPopup != null) return false;
+        RemoteMappings.Mapping mapping = RemoteMappings.find(remoteMappings, event.getKeyCode());
+        if (mapping == null) return false;
+        if (event.getAction() == KeyEvent.ACTION_UP && !event.isCanceled()) runRemoteAction(mapping);
+        return true;
+    }
+
+    private void runRemoteAction(RemoteMappings.Mapping mapping) {
+        switch (mapping.action) {
+            case RemoteMappings.ACTION_QUICK_SETTINGS:
+                open(new Intent(this, QuickSettingsActivity.class));
+                break;
+            case RemoteMappings.ACTION_INPUTS:
+                showInputs();
+                break;
+            case RemoteMappings.ACTION_LIBRARY:
+                if (appLibraryEnabled) onLibraryRequested();
+                break;
+            case RemoteMappings.ACTION_CLOCK:
+                startActivity(new Intent(this, ClockActivity.class));
+                break;
+            case RemoteMappings.ACTION_HOME:
+                grid.scrollToPosition(0);
+                lastFocused = 0;
+                lastFocusedKey = adapter.getItemCount() > 0 ? adapter.keyAt(0) : null;
+                grid.post(() -> focusTile(0));
+                break;
+            case RemoteMappings.ACTION_APP:
+                RemoteKeys.launch(this, mapping.pkg);
+                break;
+            default:
+                break;
+        }
+    }
+
     // ---- reorder ---------------------------------------------------------------------------------
 
     /** Blue the glass turns while reorder mode is on. */
@@ -1088,6 +1134,7 @@ public class MainActivity extends Activity implements AppAdapter.TileListener {
     @Override
     public boolean dispatchKeyEvent(KeyEvent event) {
         if (handleSettingsKey(event)) return true;
+        if (handleRemoteMapping(event)) return true;
         if (!reordering) return super.dispatchKeyEvent(event);
         if (dockEditing) return dispatchDockEdit(event);
         boolean down = event.getAction() == KeyEvent.ACTION_DOWN;
