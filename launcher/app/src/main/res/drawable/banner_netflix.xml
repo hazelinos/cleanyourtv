@@ -1,12 +1,17 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!-- Banner for a MovieBox tile shown as Netflix (config.xml, app_banners; see AppPresentation):
-     a black field with the red "N". -->
-<layer-list xmlns:android="http://schemas.android.com/apk/res/android">
-    <item android:width="320dp" android:height="180dp">
-        <shape android:shape="rectangle">
-            <gradient android:angle="315" android:startColor="#FF1A1A1A" android:endColor="#FF000000" />
-        </shape>
-    </item>
-    <item android:width="76dp" android:height="76dp" android:gravity="center"
-        android:drawable="@drawable/ic_netflix_n" />
-</layer-list>
+     a black field with the red "N" centred on it. The app library shows the same art as its icon.
+     A launcher-side display override only; the app itself is untouched. -->
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="320dp" android:height="180dp"
+    android:viewportWidth="320" android:viewportHeight="180">
+    <path
+        android:fillColor="#FF0D0D0D"
+        android:pathData="M0,0 h320 v180 h-320 z" />
+    <path
+        android:fillColor="#FFE50914"
+        android:pathData="M136,42 h13 v96 h-13 z M171,42 h13 v96 h-13 z" />
+    <path
+        android:fillColor="#FFB00610"
+        android:pathData="M149,42 h13 l22,96 h-13 z" />
+</vector>

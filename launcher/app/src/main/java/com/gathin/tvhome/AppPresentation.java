@@ -5,13 +5,13 @@ package com.gathin.tvhome;
  *
  * THE OVERRIDE TABLE (the one place this mapping lives; the rows below are in the same order):
  *
- *   package                        shown as   tile banner      library badge
- *   ------------------------------ ---------- ---------------- ----------------
- *   com.liskovsoft.smarttubetv     "YouTube"  banner_youtube   ic_youtube
- *   org.smarttube.stable           "YouTube"  banner_youtube   ic_youtube
- *   org.smarttube.beta             "YouTube"  banner_youtube   ic_youtube
- *   com.movieboxpro.android        "Netflix"  banner_netflix   ic_netflix_n (on the row's dark ground)
- *   com.community.oneroom          "Netflix"  banner_netflix   ic_netflix_n (on the row's dark ground)
+ *   package                        shown as   tile banner / library icon
+ *   ------------------------------ ---------- --------------------------
+ *   com.liskovsoft.smarttubetv     "YouTube"  banner_youtube
+ *   org.smarttube.stable           "YouTube"  banner_youtube
+ *   org.smarttube.beta             "YouTube"  banner_youtube
+ *   com.movieboxpro.android        "Netflix"  banner_netflix
+ *   com.community.oneroom          "Netflix"  banner_netflix
  *
  * SmartTube is a third-party YouTube client and MovieBox a third-party streaming app; on a TV whose
  * owner installed them as their YouTube / Netflix replacements, the stock names and icons read as
@@ -36,8 +36,8 @@ final class AppPresentation {
     };
     private static final String[] LABELS = {"YouTube", "YouTube", "YouTube", "Netflix", "Netflix"};
     private static final int[] BADGES = {
-            R.drawable.ic_youtube, R.drawable.ic_youtube, R.drawable.ic_youtube,
-            R.drawable.ic_netflix_n, R.drawable.ic_netflix_n,
+            R.drawable.banner_youtube, R.drawable.banner_youtube, R.drawable.banner_youtube,
+            R.drawable.banner_netflix, R.drawable.banner_netflix,
     };
 
     private AppPresentation() { }
@@ -51,7 +51,7 @@ final class AppPresentation {
         return -1;
     }
 
-    /** The library badge for a package, or 0 when it keeps its own icon. */
+    /** The library icon for a package (its banner art), or 0 when it keeps its own icon. */
     static int badgeRes(String pkg) {
         int i = indexOf(pkg);
         return i >= 0 ? BADGES[i] : 0;

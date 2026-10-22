@@ -62,13 +62,6 @@ final class RemoteMappings {
             this.action = action;
             this.pkg = pkg;
         }
-
-        @Override public boolean equals(Object o) {
-            if (!(o instanceof Mapping)) return false;
-            Mapping m = (Mapping) o;
-            return keyCode == m.keyCode && action.equals(m.action)
-                    && (pkg == null ? m.pkg == null : pkg.equals(m.pkg));
-        }
     }
 
     private RemoteMappings() { }

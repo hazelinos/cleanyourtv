@@ -1,12 +1,17 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!-- Banner for a SmartTube tile shown as YouTube (config.xml, app_banners; see AppPresentation):
-     a red field with the YouTube badge centred on it. -->
-<layer-list xmlns:android="http://schemas.android.com/apk/res/android">
-    <item android:width="320dp" android:height="180dp">
-        <shape android:shape="rectangle">
-            <gradient android:angle="315" android:startColor="#FFE62117" android:endColor="#FF8F000F" />
-        </shape>
-    </item>
-    <item android:width="76dp" android:height="76dp" android:gravity="center"
-        android:drawable="@drawable/ic_youtube" />
-</layer-list>
+     a red field with the play badge centred on it. The app library shows the same art as its icon.
+     A launcher-side display override only; the app itself is untouched. -->
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="320dp" android:height="180dp"
+    android:viewportWidth="320" android:viewportHeight="180">
+    <path
+        android:fillColor="#FFC8160C"
+        android:pathData="M0,0 h320 v180 h-320 z" />
+    <path
+        android:fillColor="#FFFF0000"
+        android:pathData="M131,52 h58 a14,14 0 0 1 14,14 v48 a14,14 0 0 1 -14,14 h-58 a14,14 0 0 1 -14,-14 v-48 a14,14 0 0 1 14,-14 z" />
+    <path
+        android:fillColor="#FFFFFFFF"
+        android:pathData="M150,71 v38 l33,-19 z" />
+</vector>
