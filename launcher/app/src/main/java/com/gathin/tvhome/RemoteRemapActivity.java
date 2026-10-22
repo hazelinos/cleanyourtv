@@ -28,7 +28,7 @@ import java.util.Map;
 public final class RemoteRemapActivity extends Activity {
 
     private LinearLayout rows;
-    private TextView captureHint;
+    private TextView addChoice;
     private TextView resetChoice;
     private List<RemoteMappings.Mapping> mappings = new ArrayList<>();
     /** True between "Add mapping" and the button press (or Back) that ends it. */
@@ -39,16 +39,15 @@ public final class RemoteRemapActivity extends Activity {
         super.onCreate(state);
         setContentView(R.layout.activity_remote_remap);
         rows = findViewById(R.id.rows);
-        captureHint = findViewById(R.id.captureHint);
+        addChoice = findViewById(R.id.addChoice);
         resetChoice = findViewById(R.id.resetChoice);
-        findViewById(R.id.addChoice).setOnClickListener(v -> {
+        addChoice.setOnClickListener(v -> {
             capturing = true;
-            captureHint.setVisibility(View.VISIBLE);
-            captureHint.requestFocus();
+            addChoice.setText(R.string.remap_press_button);
         });
         resetChoice.setOnClickListener(v -> new AlertDialog.Builder(this)
                 .setMessage(R.string.remap_reset_confirm)
-                .setPositiveButton(R.string.remove, (dialog, which) -> {
+                .setPositiveButton(R.string.remap_reset, (dialog, which) -> {
                     mappings = new ArrayList<>();
                     persist();
                     buildRows();
@@ -57,7 +56,7 @@ public final class RemoteRemapActivity extends Activity {
                 .show());
         mappings = new ArrayList<>(RemoteMappings.load(RemoteMappings.storeFile(this)));
         buildRows();
-        findViewById(R.id.addChoice).requestFocus();
+        addChoice.requestFocus();
     }
 
     /** While capturing, the next button press is the mapping's key; Back cancels instead. */
@@ -81,7 +80,7 @@ public final class RemoteRemapActivity extends Activity {
 
     private void stopCapture() {
         capturing = false;
-        captureHint.setVisibility(View.GONE);
+        addChoice.setText(R.string.remap_add);
     }
 
     /** The action list for a key; {@code replaceKey} >= 0 edits that key's mapping (and offers Delete). */

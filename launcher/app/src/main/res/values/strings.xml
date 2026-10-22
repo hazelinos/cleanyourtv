@@ -66,7 +66,6 @@
     <string name="remap_delete">Delete mapping</string>
     <string name="remap_reset">Reset all mappings</string>
     <string name="remap_reset_confirm">Remove every remote button mapping?</string>
-    <string name="remove">Remove</string>
     <string name="columns_label">Apps per row</string>
     <string name="rows_below_dock_label">Rows below dock</string>
     <string name="dock_opacity_label">Dock band opacity</string>

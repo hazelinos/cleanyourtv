@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!-- Settings rows and choices, glass style: a translucent dark slab with a thin rim at rest, a soft
      green tint when the value is the chosen one, and the solid white focus the pills use (the row's
-     text colour follows via @drawable/settings_text). -->
+     text colour follows via @drawable/pill_text, like the pills). -->
 <selector xmlns:android="http://schemas.android.com/apk/res/android">
     <item android:state_focused="true">
         <shape android:shape="rectangle">

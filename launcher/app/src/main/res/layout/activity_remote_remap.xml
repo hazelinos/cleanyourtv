@@ -4,7 +4,7 @@
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@drawable/settings_bg"
+    android:background="#FF101419"
     android:fillViewport="true">
 
     <LinearLayout
@@ -30,16 +30,6 @@
             android:text="@string/remote_buttons_hint"
             android:textColor="#FFACB8C1"
             android:textSize="15sp" />
-
-        <TextView
-            android:id="@+id/captureHint"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="24dp"
-            android:text="@string/remap_press_button"
-            android:textColor="#FFB9E7C7"
-            android:textSize="20sp"
-            android:visibility="gone" />
 
         <LinearLayout
             android:id="@+id/rows"
