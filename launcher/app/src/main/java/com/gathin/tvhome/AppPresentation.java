@@ -16,8 +16,8 @@ import java.util.Map;
  *   com.liskovsoft.smarttubetv     "YouTube"  banner_youtube   ic_youtube
  *   org.smarttube.stable           "YouTube"  banner_youtube   ic_youtube
  *   org.smarttube.beta             "YouTube"  banner_youtube   ic_youtube
- *   com.movieboxpro.android        "Netflix"  banner_netflix   ic_netflix
- *   com.community.oneroom          "Netflix"  banner_netflix   ic_netflix
+ *   com.movieboxpro.android        "Netflix"  banner_netflix   ic_netflix_n (on the row's dark ground)
+ *   com.community.oneroom          "Netflix"  banner_netflix   ic_netflix_n (on the row's dark ground)
  *
  * SmartTube is a third-party YouTube client and MovieBox a third-party streaming app; on a TV whose
  * owner installed them as their YouTube / Netflix replacements, the stock names and icons read as
@@ -36,15 +36,13 @@ import java.util.Map;
  */
 final class AppPresentation {
 
-    /** What one overridden package is shown as: the tile label and the two badge drawables. */
+    /** What one overridden package is shown as: its tile label and its app-library badge. */
     static final class Brand {
         final String label;
-        final int bannerRes;
         final int badgeRes;
 
-        Brand(String label, int bannerRes, int badgeRes) {
+        Brand(String label, int badgeRes) {
             this.label = label;
-            this.bannerRes = bannerRes;
             this.badgeRes = badgeRes;
         }
     }
@@ -52,11 +50,11 @@ final class AppPresentation {
     private static final Map<String, Brand> BRANDS = new HashMap<>();
 
     static {
-        Brand youtube = new Brand("YouTube", R.drawable.banner_youtube, R.drawable.ic_youtube);
+        Brand youtube = new Brand("YouTube", R.drawable.ic_youtube);
         BRANDS.put("com.liskovsoft.smarttubetv", youtube);
         BRANDS.put("org.smarttube.stable", youtube);
         BRANDS.put("org.smarttube.beta", youtube);
-        Brand netflix = new Brand("Netflix", R.drawable.banner_netflix, R.drawable.ic_netflix);
+        Brand netflix = new Brand("Netflix", R.drawable.ic_netflix_n);
         BRANDS.put("com.movieboxpro.android", netflix);
         BRANDS.put("com.community.oneroom", netflix);
     }

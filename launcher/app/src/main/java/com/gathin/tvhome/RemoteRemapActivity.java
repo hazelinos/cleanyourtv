@@ -84,7 +84,7 @@ public final class RemoteRemapActivity extends Activity {
         captureHint.setVisibility(View.GONE);
     }
 
-    /** The action list for a key; {@code replaceKey} >= 0 edits that key's mapping instead of adding. */
+    /** The action list for a key; {@code replaceKey} >= 0 edits that key's mapping (and offers Delete). */
     private void chooseAction(final int keyCode, final int replaceKey) {
         final String[] actions = {RemoteMappings.ACTION_QUICK_SETTINGS, RemoteMappings.ACTION_INPUTS,
                 RemoteMappings.ACTION_LIBRARY, RemoteMappings.ACTION_CLOCK, RemoteMappings.ACTION_HOME,
@@ -92,14 +92,21 @@ public final class RemoteRemapActivity extends Activity {
         String[] labels = {getString(R.string.remap_action_quick_settings), getString(R.string.remap_action_inputs),
                 getString(R.string.remap_action_library), getString(R.string.remap_action_clock),
                 getString(R.string.remap_action_home), getString(R.string.remap_action_open_app)};
-        new AlertDialog.Builder(this)
+        AlertDialog.Builder dialog = new AlertDialog.Builder(this)
                 .setTitle(getString(R.string.remap_choose_action, keyName(keyCode)))
-                .setItems(labels, (dialog, which) -> {
+                .setItems(labels, (d, which) -> {
                     if (RemoteMappings.ACTION_APP.equals(actions[which])) chooseApp(keyCode, replaceKey);
                     else save(new RemoteMappings.Mapping(keyCode, actions[which], null), replaceKey);
                 })
-                .setNegativeButton(android.R.string.cancel, null)
-                .show();
+                .setNegativeButton(android.R.string.cancel, null);
+        if (replaceKey >= 0) {
+            dialog.setNeutralButton(R.string.remap_delete, (d, which) -> {
+                mappings = new ArrayList<>(RemoteMappings.without(mappings, replaceKey));
+                persist();
+                buildRows();
+            });
+        }
+        dialog.show();
     }
 
     /** The installed TV apps an "open app" mapping can point at, by their shown name. */
@@ -162,28 +169,10 @@ public final class RemoteRemapActivity extends Activity {
                     LinearLayout.LayoutParams.MATCH_PARENT, dp(52));
             lp.bottomMargin = dp(10);
             row.setLayoutParams(lp);
-            row.setOnClickListener(v -> rowMenu(m));
+            row.setOnClickListener(v -> chooseAction(m.keyCode, m.keyCode));
             rows.addView(row);
         }
         resetChoice.setVisibility(mappings.isEmpty() ? View.GONE : View.VISIBLE);
-    }
-
-    /** A mapping row's menu: give the button a different action, or delete its mapping. */
-    private void rowMenu(final RemoteMappings.Mapping m) {
-        String[] items = {getString(R.string.remap_choose_action, keyName(m.keyCode)),
-                getString(R.string.remap_delete)};
-        new AlertDialog.Builder(this)
-                .setTitle(getString(R.string.remap_key_named, keyName(m.keyCode), m.keyCode))
-                .setItems(items, (dialog, which) -> {
-                    if (which == 0) chooseAction(m.keyCode, m.keyCode);
-                    else {
-                        mappings = new ArrayList<>(RemoteMappings.without(mappings, m.keyCode));
-                        persist();
-                        buildRows();
-                    }
-                })
-                .setNegativeButton(android.R.string.cancel, null)
-                .show();
     }
 
     private String actionLabel(RemoteMappings.Mapping m) {

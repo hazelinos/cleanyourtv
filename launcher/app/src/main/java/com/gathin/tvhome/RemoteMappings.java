@@ -64,10 +64,6 @@ final class RemoteMappings {
             return keyCode == m.keyCode && action.equals(m.action)
                     && (pkg == null ? m.pkg == null : pkg.equals(m.pkg));
         }
-
-        @Override public int hashCode() {
-            return keyCode * 31 + action.hashCode() + (pkg == null ? 0 : pkg.hashCode());
-        }
     }
 
     private RemoteMappings() { }
