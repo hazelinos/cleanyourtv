@@ -13,9 +13,9 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import java.util.ArrayList;
-import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.TreeMap;
 
 /**
  * The Remote buttons page: add, change and remove the owner's in-app button mappings
@@ -111,23 +111,21 @@ public final class RemoteRemapActivity extends Activity {
     /** The installed TV apps an "open app" mapping can point at, by their shown name. */
     private void chooseApp(final int keyCode, final int replaceKey) {
         PackageManager pm = getPackageManager();
-        Map<String, String> byPackage = new LinkedHashMap<>();
+        // Shown name -> package, sorted by the name; two apps sharing a shown name keep the first.
+        Map<String, String> byLabel = new TreeMap<>();
+        java.util.Set<String> seen = new java.util.HashSet<>();
         for (ResolveInfo ri : pm.queryIntentActivities(
                 new Intent(Intent.ACTION_MAIN).addCategory(Intent.CATEGORY_LEANBACK_LAUNCHER), 0)) {
-            if (ri.activityInfo == null || ri.activityInfo.packageName.equals(getPackageName())) continue;
+            if (ri.activityInfo == null) continue;
             String pkg = ri.activityInfo.packageName;
-            if (!byPackage.containsKey(pkg)) {
-                byPackage.put(pkg, AppPresentation.displayLabel(pkg, String.valueOf(ri.loadLabel(pm))));
-            }
+            if (pkg.equals(getPackageName()) || !seen.add(pkg)) continue;
+            byLabel.putIfAbsent(AppPresentation.displayLabel(pkg, String.valueOf(ri.loadLabel(pm))), pkg);
         }
-        List<Map.Entry<String, String>> apps = new ArrayList<>(byPackage.entrySet());
-        apps.sort((a, b) -> a.getValue().compareToIgnoreCase(b.getValue()));
-        String[] labels = new String[apps.size()];
-        for (int i = 0; i < apps.size(); i++) labels[i] = apps.get(i).getValue();
+        String[] labels = byLabel.keySet().toArray(new String[0]);
         new AlertDialog.Builder(this)
                 .setTitle(R.string.remap_action_open_app)
                 .setItems(labels, (dialog, which) ->
-                        save(new RemoteMappings.Mapping(keyCode, RemoteMappings.ACTION_APP, apps.get(which).getKey()), replaceKey))
+                        save(new RemoteMappings.Mapping(keyCode, RemoteMappings.ACTION_APP, byLabel.get(labels[which])), replaceKey))
                 .setNegativeButton(android.R.string.cancel, null)
                 .show();
     }
