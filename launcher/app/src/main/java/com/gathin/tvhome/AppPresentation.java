@@ -1,12 +1,9 @@
 package com.gathin.tvhome;
 
-import java.util.HashMap;
-import java.util.Map;
-
 /**
  * How a few well-known third-party apps are presented on this launcher's own screens.
  *
- * THE OVERRIDE TABLE (the one place this mapping lives):
+ * THE OVERRIDE TABLE (the one place this mapping lives; the rows below are in the same order):
  *
  *   package                        shown as   tile banner      library badge
  *   ------------------------------ ---------- ---------------- ----------------
@@ -33,39 +30,36 @@ import java.util.Map;
  */
 final class AppPresentation {
 
-    /** What one overridden package is shown as: its tile label and its app-library badge. */
-    static final class Brand {
-        final String label;
-        final int badgeRes;
-
-        Brand(String label, int badgeRes) {
-            this.label = label;
-            this.badgeRes = badgeRes;
-        }
-    }
-
-    private static final Map<String, Brand> BRANDS = new HashMap<>();
-
-    static {
-        Brand youtube = new Brand("YouTube", R.drawable.ic_youtube);
-        BRANDS.put("com.liskovsoft.smarttubetv", youtube);
-        BRANDS.put("org.smarttube.stable", youtube);
-        BRANDS.put("org.smarttube.beta", youtube);
-        Brand netflix = new Brand("Netflix", R.drawable.ic_netflix_n);
-        BRANDS.put("com.movieboxpro.android", netflix);
-        BRANDS.put("com.community.oneroom", netflix);
-    }
+    private static final String[] PACKAGES = {
+            "com.liskovsoft.smarttubetv", "org.smarttube.stable", "org.smarttube.beta",
+            "com.movieboxpro.android", "com.community.oneroom",
+    };
+    private static final String[] LABELS = {"YouTube", "YouTube", "YouTube", "Netflix", "Netflix"};
+    private static final int[] BADGES = {
+            R.drawable.ic_youtube, R.drawable.ic_youtube, R.drawable.ic_youtube,
+            R.drawable.ic_netflix_n, R.drawable.ic_netflix_n,
+    };
 
     private AppPresentation() { }
 
-    /** The brand a package is shown as, or null when it keeps its own name and art. */
-    static Brand brand(String pkg) {
-        return pkg == null ? null : BRANDS.get(pkg);
+    private static int indexOf(String pkg) {
+        if (pkg != null) {
+            for (int i = 0; i < PACKAGES.length; i++) {
+                if (PACKAGES[i].equals(pkg)) return i;
+            }
+        }
+        return -1;
+    }
+
+    /** The library badge for a package, or 0 when it keeps its own icon. */
+    static int badgeRes(String pkg) {
+        int i = indexOf(pkg);
+        return i >= 0 ? BADGES[i] : 0;
     }
 
     /** The name a tile or library row shows: the brand's label for a table package, else the app's own. */
     static String displayLabel(String pkg, String ownLabel) {
-        Brand brand = brand(pkg);
-        return brand != null ? brand.label : ownLabel;
+        int i = indexOf(pkg);
+        return i >= 0 ? LABELS[i] : ownLabel;
     }
 }

@@ -758,9 +758,7 @@ public class MainActivity extends Activity implements AppAdapter.TileListener {
         if (openLauncherSettingsIfAsked(intent)) return;
         if (openInputsIfAsked(intent)) return;
         if (intent == null || !intent.hasCategory(Intent.CATEGORY_HOME)) return;
-        grid.scrollToPosition(0);
-        lastFocused = 0;
-        lastFocusedKey = adapter.getItemCount() > 0 ? adapter.keyAt(0) : null;
+        goToTop();
         if (stopped) {
             tileRefresh.onHomeAgain();
         } else {
@@ -1076,6 +1074,13 @@ public class MainActivity extends Activity implements AppAdapter.TileListener {
         return false;
     }
 
+    /** Back to the first tile: the scroll and the focus bookkeeping goToTop callers share. */
+    private void goToTop() {
+        grid.scrollToPosition(0);
+        lastFocused = 0;
+        lastFocusedKey = adapter.getItemCount() > 0 ? adapter.keyAt(0) : null;
+    }
+
     /**
      * The owner's remote button mappings (RemoteMappings), made on the Remote buttons page. While
      * Home is in front with no menu, popup or library open, a mapped button runs its action on
@@ -1106,9 +1111,7 @@ public class MainActivity extends Activity implements AppAdapter.TileListener {
                 startActivity(new Intent(this, ClockActivity.class));
                 break;
             case RemoteMappings.ACTION_HOME:
-                grid.scrollToPosition(0);
-                lastFocused = 0;
-                lastFocusedKey = adapter.getItemCount() > 0 ? adapter.keyAt(0) : null;
+                goToTop();
                 grid.post(() -> focusTile(0));
                 break;
             case RemoteMappings.ACTION_APP:

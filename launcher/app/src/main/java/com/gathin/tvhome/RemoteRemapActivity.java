@@ -64,12 +64,13 @@ public final class RemoteRemapActivity extends Activity {
     public boolean dispatchKeyEvent(KeyEvent event) {
         if (!capturing) return super.dispatchKeyEvent(event);
         int code = event.getKeyCode();
-        if (code == KeyEvent.KEYCODE_BACK || code == KeyEvent.KEYCODE_ESCAPE) {
-            stopCapture();
+        boolean cancel = code == KeyEvent.KEYCODE_BACK || code == KeyEvent.KEYCODE_ESCAPE;
+        if (!cancel && (event.getAction() != KeyEvent.ACTION_DOWN || event.getRepeatCount() > 0)) {
             return true;
         }
-        if (event.getAction() != KeyEvent.ACTION_DOWN || event.getRepeatCount() > 0) return true;
-        stopCapture();
+        capturing = false;
+        addChoice.setText(R.string.remap_add);
+        if (cancel) return true;
         if (RemoteMappings.isReserved(code)) {
             Toast.makeText(this, R.string.remap_button_reserved, Toast.LENGTH_LONG).show();
             return true;
@@ -78,24 +79,24 @@ public final class RemoteRemapActivity extends Activity {
         return true;
     }
 
-    private void stopCapture() {
-        capturing = false;
-        addChoice.setText(R.string.remap_add);
-    }
+    // The actions a mapping can run, with the label each is shown by (Inputs and App library reuse
+    // the launcher's existing strings).
+    private static final String[] ACTIONS = {RemoteMappings.ACTION_QUICK_SETTINGS,
+            RemoteMappings.ACTION_INPUTS, RemoteMappings.ACTION_LIBRARY, RemoteMappings.ACTION_CLOCK,
+            RemoteMappings.ACTION_HOME, RemoteMappings.ACTION_APP};
+    private static final int[] ACTION_LABELS = {R.string.remap_action_quick_settings, R.string.inputs,
+            R.string.app_library, R.string.remap_action_clock, R.string.remap_action_home,
+            R.string.remap_action_open_app};
 
     /** The action list for a key; {@code replaceKey} >= 0 edits that key's mapping (and offers Delete). */
     private void chooseAction(final int keyCode, final int replaceKey) {
-        final String[] actions = {RemoteMappings.ACTION_QUICK_SETTINGS, RemoteMappings.ACTION_INPUTS,
-                RemoteMappings.ACTION_LIBRARY, RemoteMappings.ACTION_CLOCK, RemoteMappings.ACTION_HOME,
-                RemoteMappings.ACTION_APP};
-        String[] labels = {getString(R.string.remap_action_quick_settings), getString(R.string.remap_action_inputs),
-                getString(R.string.remap_action_library), getString(R.string.remap_action_clock),
-                getString(R.string.remap_action_home), getString(R.string.remap_action_open_app)};
+        String[] labels = new String[ACTIONS.length];
+        for (int i = 0; i < ACTIONS.length; i++) labels[i] = getString(ACTION_LABELS[i]);
         AlertDialog.Builder dialog = new AlertDialog.Builder(this)
                 .setTitle(getString(R.string.remap_choose_action, keyName(keyCode)))
                 .setItems(labels, (d, which) -> {
-                    if (RemoteMappings.ACTION_APP.equals(actions[which])) chooseApp(keyCode, replaceKey);
-                    else save(new RemoteMappings.Mapping(keyCode, actions[which], null), replaceKey);
+                    if (RemoteMappings.ACTION_APP.equals(ACTIONS[which])) chooseApp(keyCode, replaceKey);
+                    else save(new RemoteMappings.Mapping(keyCode, ACTIONS[which], null), replaceKey);
                 })
                 .setNegativeButton(android.R.string.cancel, null);
         if (replaceKey >= 0) {
@@ -166,21 +167,20 @@ public final class RemoteRemapActivity extends Activity {
     }
 
     private String actionLabel(RemoteMappings.Mapping m) {
-        switch (m.action) {
-            case RemoteMappings.ACTION_QUICK_SETTINGS: return getString(R.string.remap_action_quick_settings);
-            case RemoteMappings.ACTION_INPUTS: return getString(R.string.remap_action_inputs);
-            case RemoteMappings.ACTION_LIBRARY: return getString(R.string.remap_action_library);
-            case RemoteMappings.ACTION_CLOCK: return getString(R.string.remap_action_clock);
-            case RemoteMappings.ACTION_HOME: return getString(R.string.remap_action_home);
-            case RemoteMappings.ACTION_APP:
-                try {
-                    return AppPresentation.displayLabel(m.pkg, String.valueOf(getPackageManager()
-                            .getApplicationLabel(getPackageManager().getApplicationInfo(m.pkg, 0))));
-                } catch (PackageManager.NameNotFoundException | RuntimeException e) {
-                    return m.pkg;
-                }
-            default: return m.action;
+        for (int i = 0; i < ACTIONS.length; i++) {
+            if (ACTIONS[i].equals(m.action) && !RemoteMappings.ACTION_APP.equals(m.action)) {
+                return getString(ACTION_LABELS[i]);
+            }
         }
+        if (RemoteMappings.ACTION_APP.equals(m.action)) {
+            try {
+                return AppPresentation.displayLabel(m.pkg, String.valueOf(getPackageManager()
+                        .getApplicationLabel(getPackageManager().getApplicationInfo(m.pkg, 0))));
+            } catch (PackageManager.NameNotFoundException | RuntimeException e) {
+                return m.pkg;
+            }
+        }
+        return m.action;
     }
 
     /** "BUTTON_12" for KEYCODE_BUTTON_12; the number itself for a key Android has no name for. */

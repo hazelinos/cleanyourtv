@@ -23,6 +23,7 @@ exactly as before.
   `app_keys` list in [themes/README.md](../themes/README.md), answered by the opt-in
   InputKeyService accessibility helper. The remapper deliberately does not widen that.
 
-Mappings live in `remote_mappings.json` in the launcher's private storage, written atomically and
-validated strictly on read (the cards.json pattern): a file that does not decode is moved aside
-and Home continues with no mappings.
+Mappings live in `remote_mappings.json` in the launcher's private storage, written atomically
+and validated strictly on read: the atomic write and the move-aside follow the cards.json
+pattern, the parsing is org.json as in Config. A file that does not decode is moved aside and
+Home continues with no mappings.
