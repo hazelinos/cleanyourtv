@@ -1,23 +1,26 @@
 <?xml version="1.0" encoding="utf-8"?>
+<!-- Settings rows and choices, glass style: a translucent dark slab with a thin rim at rest, a soft
+     green tint when the value is the chosen one, and the solid white focus the pills use (the row's
+     text colour follows via @drawable/settings_text). -->
 <selector xmlns:android="http://schemas.android.com/apk/res/android">
     <item android:state_focused="true">
         <shape android:shape="rectangle">
-            <solid android:color="#5574A987" />
+            <solid android:color="#F5FFFFFF" />
             <corners android:radius="14dp" />
-            <stroke android:width="2dp" android:color="#FFB9E7C7" />
         </shape>
     </item>
     <item android:state_selected="true">
         <shape android:shape="rectangle">
-            <solid android:color="#334DAE6D" />
+            <solid android:color="#3D4DAE6D" />
             <corners android:radius="14dp" />
             <stroke android:width="1dp" android:color="#FF4DAE6D" />
         </shape>
     </item>
     <item>
         <shape android:shape="rectangle">
-            <solid android:color="#FF242B34" />
+            <gradient android:angle="270" android:startColor="#2EFFFFFF" android:endColor="#14FFFFFF" />
             <corners android:radius="14dp" />
+            <stroke android:width="1dp" android:color="#2EFFFFFF" />
         </shape>
     </item>
 </selector>

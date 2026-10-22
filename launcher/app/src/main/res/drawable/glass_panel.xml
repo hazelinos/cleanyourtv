@@ -1,10 +1,20 @@
 <?xml version="1.0" encoding="utf-8"?>
+<!-- Glass panel for popups, menus and dialogs: a dark translucent slab with a soft top sheen and a
+     thin light rim, so the wallpaper stays visible behind it (Apple TV / visionOS style). Local
+     translucency only: no blur pass, so it costs one layer-list draw on weak TV GPUs. -->
 <layer-list xmlns:android="http://schemas.android.com/apk/res/android">
     <item>
         <shape android:shape="rectangle">
-            <gradient android:angle="270" android:startColor="#F22A2A2E" android:endColor="#F5161618" />
-            <stroke android:width="1dp" android:color="#33FFFFFF" />
-            <corners android:radius="20dp" />
+            <gradient android:angle="270" android:startColor="#F233333A" android:endColor="#F5141418" />
+            <stroke android:width="1dp" android:color="#40FFFFFF" />
+            <corners android:radius="22dp" />
+        </shape>
+    </item>
+    <!-- Top sheen: a faint white wash fading down from the top edge, inside the same rounded shape. -->
+    <item android:bottom="90dp">
+        <shape android:shape="rectangle">
+            <gradient android:angle="270" android:startColor="#2EFFFFFF" android:endColor="#00FFFFFF" />
+            <corners android:topLeftRadius="22dp" android:topRightRadius="22dp" />
         </shape>
     </item>
 </layer-list>
