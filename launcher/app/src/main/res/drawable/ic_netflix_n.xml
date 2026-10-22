@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Netflix-style red "N" drawn by the launcher for a MovieBox tile (see AppPresentation):
+     two bright stems with the darker diagonal ribbon between them. A launcher-side display
+     override only; the app itself is untouched. -->
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="48dp" android:height="48dp"
+    android:viewportWidth="48" android:viewportHeight="48">
+    <path
+        android:fillColor="#FFE50914"
+        android:pathData="M14,8 h6 v32 h-6 z" />
+    <path
+        android:fillColor="#FFE50914"
+        android:pathData="M28,8 h6 v32 h-6 z" />
+    <path
+        android:fillColor="#FFB00610"
+        android:pathData="M20,8 h6 l8,32 h-6 z" />
+</vector>

@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Banner for a SmartTube tile shown as YouTube (config.xml, app_banners; see AppPresentation):
+     a red field with the white play triangle. -->
+<layer-list xmlns:android="http://schemas.android.com/apk/res/android">
+    <item android:width="320dp" android:height="180dp">
+        <shape android:shape="rectangle">
+            <gradient android:angle="315" android:startColor="#FFE62117" android:endColor="#FF8F000F" />
+        </shape>
+    </item>
+    <item android:width="76dp" android:height="76dp" android:gravity="center"
+        android:drawable="@drawable/ic_youtube_play" />
+</layer-list>

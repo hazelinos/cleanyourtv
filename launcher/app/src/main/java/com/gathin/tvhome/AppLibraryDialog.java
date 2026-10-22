@@ -295,7 +295,11 @@ final class AppLibraryDialog {
 
     private static String loadLabel(PackageManager pm, ResolveInfo app) {
         String pkg = app.activityInfo.packageName;
-        try { return Cards.cleanLabel(String.valueOf(app.loadLabel(pm)), pkg); }
+        try {
+            // The brand table (AppPresentation) renames a few clients on this launcher's screens,
+            // the library included; tiles take the same names from config.xml's app_labels.
+            return Cards.cleanLabel(AppPresentation.displayLabel(pkg, String.valueOf(app.loadLabel(pm))), pkg);
+        }
         catch (RuntimeException unavailable) { return pkg; }
     }
 
@@ -303,6 +307,12 @@ final class AppLibraryDialog {
     private void bindIcon(ImageView icon, ResolveInfo app) {
         String pkg = app.activityInfo.packageName;
         icon.setTag(pkg);
+        // A brand-table package (AppPresentation) shows the launcher's own badge, not the app's icon.
+        Drawable badge = AppPresentation.badge(activity, pkg);
+        if (badge != null) {
+            icon.setImageDrawable(badge);
+            return;
+        }
         Drawable cached = icons.get(pkg);
         icon.setImageDrawable(cached);
         if (cached != null || !iconsLoading.add(pkg)) return;
