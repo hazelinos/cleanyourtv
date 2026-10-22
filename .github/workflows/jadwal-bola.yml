@@ -1,0 +1,39 @@
+name: Jadwal Bola add-on
+
+# Builds the Jadwal Bola add-on on this fork and uploads its APK as an artifact,
+# the same delivery route as the launcher APK in ci.yml.
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths: ["addons/jadwal-bola/**", ".github/workflows/jadwal-bola.yml"]
+
+permissions:
+  contents: read
+
+jobs:
+  build:
+    name: Build Jadwal Bola add-on
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: "17"
+      - uses: android-actions/setup-android@v3
+        with:
+          packages: platforms;android-34 build-tools;34.0.0
+      - uses: gradle/actions/setup-gradle@v4
+      - name: Release build
+        working-directory: addons/jadwal-bola
+        run: |
+          chmod +x gradlew
+          ./gradlew --no-daemon assembleRelease
+      - name: Upload Jadwal Bola APK
+        uses: actions/upload-artifact@v4
+        with:
+          name: jadwal-bola-apk
+          path: addons/jadwal-bola/app/build/outputs/apk/release/app-release.apk
+          if-no-files-found: error
+          retention-days: 7
